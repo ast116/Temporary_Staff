@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" type="text/css" href="{{url_for('static',filename='css/bootstrap.css')}}">
+    <script type="text/javascript" src="{{url_for('static',filename='js/jquery.js')}}"></script>
+    <script type="text/javascript" src="{{url_for('static',filename='js/bootstrap.js')}}"></script>
+    <title>Connexion</title>
+</head>
+
+<body>
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-7 col-md-offset-2">
+                <div class="row" style="padding: 200px 100px 19px 100px;">
+                    <form role="form-horizontal" method="POST" action="{{ url_for('connecter') }}">
+                        <div class="form-group">
+                            <label class="col-sm-3 label-control" for="email">E-mail</label>
+                            <div class="input-group">
+                                <span class="input-group-addon">
+                                    <span class="glyphicon glyphicon-user"></span>
+                                </span>
+                                <input type="text" class="form-control" required placeholder="E-mail" name="email"
+                                    autocomplete="off">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-3 label-control" for="mot_de_passe">Mot de passe</label>
+                            <div class="input-group">
+                                <span class="input-group-addon">
+                                    <span class="glyphicon glyphicon-lock"></span>
+                                </span>
+                                <input type="password" class="form-control" required placeholder="Mot de passe"
+                                    name="mot_de_passe" autocomplete="off">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-sm-3"></div>
+                            <div class="input-group">
+                                <span class="input-group-addon">
+                                    <span class="glyphicon glyphicon-log-out"></span>
+                                </span>
+                                <button class="btn btn-primary btn-block" type="submit" value="authent"
+                                    name="connecter">Connexion <i class="glyphicon glyphicon-check"></i></button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

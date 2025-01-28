@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Zone Vacataire</title>
+    <link rel="stylesheet" type="text/css" href="{{url_for('static',filename='css/bootstrap.css')}}">
+    <script type="text/javascript" src="{{url_for('static',filename='js/jquery.js')}}"></script>
+    <script type="text/javascript" src="{{url_for('static',filename='js/bootstrap.js')}}"></script>
+
+</head>
+
+<body>
+    <div class="container">
+        <div class="row">
+            <div class="col-md-10">
+                <nav class="navbar navbar-inverse" role="navigation">
+                    <div class="navbar-header">
+                        <button type="button" class="navbar-toggle" data-toggle="collapse"
+                            data-target="#example-navbar-collapse">
+                            <span class="sr-only"></span>
+                            <span class="icon-bar"></span>
+                            <span class="icon-bar"></span>
+                            <span class="icon-bar"></span>
+                        </button>
+
+                    </div>
+                    <div class="collapse navbar-collapse" id="example-navbar-collapse">
+                        <ul class="nav navbar-nav">
+                            <li class="active"><a href="">Vacataire</a></li>
+                            <li><a href="{{ url_for('c') }}">Cours</a></li>
+                            <li><a href="{{ url_for('h') }}">Disposition_Heure</a></li>
+                            <li> <a href="{{ url_for('deconnecter') }}" style="color: red;">Deconnexion</a></li>
+                        </ul>
+                    </div>
+                </nav>
+                <br>
+                <br>
+                <button class="btn btn-success pull-left" data-toggle="modal" data-target="#ajout">Ajouter
+                    Vacataire <i class="glyphicon glyphicon-plus"></i></button>
+                <br><br>
+                <table class="table table-bordered table-striped table-hover">
+                    <thead>
+                        <tr class="info">
+
+                            <th>Nom_Prenom</th>
+                            <th>Email</th>
+                            <th>Telephone</th>
+                            <th>activite_principale</th>
+                            <th>date_inscription</th>
+                            <th>Action</th>
+
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for x in ar %}
+                        <tr>
+
+                            <td>{{ x[1] }}</td>
+                            <td>{{ x[2] }}</td>
+                            <td>{{ x[3] }}</td>
+                            <td>{{ x[4] }}</td>
+                            <td>{{ x[5] }}</td>
+                            <td>
+                                <div class="btn-group">
+                                    <button type="button" class="btn btn-primary dropdown-toggle"
+                                        data-toggle="dropdown"><i class="glyphicon glyphicon-cog"></i> Menu <span
+                                            class="caret"></span></button>
+                                    <ul class="dropdown-menu" role="menu">
+                                        <li> <a href="" data-toggle="modal"
+                                                data-target="#modifier{{ x[0] }}">Modifier</a>
+                                        </li>
+                                        <li> <a href="{{ url_for('supprimervacataire', idv=x[0]) }}"
+                                                onclick="return confirm('Êtes-vous sûr de vouloir cupprimer ce vacataire ?');">
+                                                Supprimer</a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+
+
+                <!-- Modale AjoutVacataire-->
+                <div class="modal fade" tabindex="-1" role="dialog" id="ajout" aria-hidden="true"
+                    aria-labelledby="Ajouter">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                Enregistrement Vacataire
+                                <button type="button" class="close" data-dismiss="modal"
+                                    aria-hidden="true">&times;</button>
+                            </div>
+                            <div class="modal-body">
+                                <form action="{{ url_for('ajoutvacataire') }}" method="POST">
+                                    <input type="hidden" name="save" value="save">
+                                    Nom_Prenom:
+                                    <input type="text" name="nom" class="form-control" required
+                                        placeholder="Entrer le Nom & Prenom" autocomplete="off">
+                                    <br>Email:
+                                    <input type="email" name="email" class="form-control" required
+                                        placeholder="Entrer l'Email">
+                                    <br>Telephone:
+                                    <input type="number" name="tel" class="form-control" required
+                                        placeholder="Entrer le numero de Telephone" autocomplete="off">
+                                    <br>Activite_Principale:
+                                    <input type="text" name="act" class="form-control" required
+                                        placeholder="Entrer l'activité du Vacataire" autocomplete="off">
+                                    <br>Date_Inscription:
+                                    <input type="date" name="date" class="form-control" required
+                                        placeholder="Entrer la Date D'inscription" autocomplete="off"><br><br>
+                                    <button type="submit" class="btn btn-primary btn-block"><i
+                                            class="glyphicon glyphicon-pencil"></i> Inscription</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Fin modale ajout-->
+
+                {% for x in ar %}
+                <!-- Modale Modification -->
+                <div class="modal fade" tabindex="-1" role="dialog" id="modifier{{ x[0] }}" aria-hidden="true"
+                    aria-labelledby="modifier">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                Modification Vacataire
+                                <button type="button" class="close" data-dismiss="modal"
+                                    aria-hidden="true">&times;</button>
+                            </div>
+                            <div class="modal-body">
+                                <form action="{{ url_for('modifiervacataire', idv=x[0]) }}" method="POST">
+                                    <input type="hidden" name="modif" value="modif">
+                                    Nom_Prenom:
+                                    <input type="text" name="nom" class="form-control" required value="{{ x[1] }}"
+                                        placeholder="Entrer le Nom & Prenom" autocomplete="off">
+                                    <br>Email:
+                                    <input type="email" name="email" class="form-control" required value="{{ x[2] }}"
+                                        placeholder="Entrer l'Email">
+                                    <br>Telephone:
+                                    <input type="number" name="tel" class="form-control" required value="{{ x[3] }}"
+                                        placeholder="Entrer le numero de Telephone" autocomplete="off">
+                                    <br>Activite_Principale:
+                                    <input type="text" name="act" class="form-control" required value="{{ x[4] }}"
+                                        placeholder="Entrer l'activité du Vacataire" autocomplete="off">
+                                    <br>Date_Inscription:
+                                    <input type="date" name="date" class="form-control" required value="{{ x[5] }}"
+                                        placeholder="Entrer la Date D'inscription" autocomplete="off">
+                                    <br><br>
+                                    <button type="submit" class="btn btn-primary">Enregistrer</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Fin Modification -->{% endfor %}

@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Gestion des Cours</title>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/bootstrap.css') }}">
+    <script type="text/javascript" src="{{ url_for('static', filename='js/jquery.js') }}"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='js/bootstrap.js') }}"></script>
+</head>
+
+<body>
+    <div class="container">
+        <div class="row">
+            <div class="col-md-10">
+                <nav class="navbar navbar-inverse" role="navigation">
+                    <div class="navbar-header">
+                        <button type="button" class="navbar-toggle" data-toggle="collapse"
+                            data-target="#example-navbar-collapse">
+                            <span class="sr-only">Navigation</span>
+                            <span class="icon-bar"></span>
+                            <span class="icon-bar"></span>
+                            <span class="icon-bar"></span>
+                        </button>
+                    </div>
+                    <div class="collapse navbar-collapse" id="example-navbar-collapse">
+                        <ul class="nav navbar-nav">
+                            <li><a href="{{ url_for('vac') }}">Vacataire</a></li>
+                            <li class="active"><a href="Cours.html">Cours</a></li>
+                            <li><a href="{{ url_for('h') }}">Disposition_Heure</a></li>
+                            <li> <a href="{{ url_for('deconnecter') }}" style="color: red;">Deconnexion</a></li>
+
+                        </ul>
+                    </div>
+                </nav>
+                <br><br>
+                <button class="btn btn-success pull-left" data-toggle="modal" data-target="#ajout">Ajouter
+                    Cours <i class="glyphicon glyphicon-plus"></i></button>
+                <br><br>
+                <table class="table table-bordered table-striped table-hover">
+                    <thead>
+                        <tr class="info">
+
+                            <th>Vacataire</th>
+                            <th>Matière</th>
+                            <th>Objectif</th>
+                            <th>Heures prévues</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for l in liste %}
+                        <tr>
+
+                            <td>{{ l[1] }}</td> <!-- Nom du vacataire -->
+                            <td>{{ l[2] }}</td>
+                            <td>{{ l[3] }}</td>
+                            <td>{{ l[4] }}</td>
+                            <td>
+                                <div class="btn-group">
+                                    <button type="button" class="btn btn-primary dropdown-toggle"
+                                        data-toggle="dropdown"><i class="glyphicon glyphicon-cog"></i> Menu <span
+                                            class="caret"></span></button>
+                                    <ul class="dropdown-menu" role="menu">
+                                        <li> <a href="" data-toggle="modal"
+                                                data-target="#modifierCours{{ l[0] }}">Modifier</a>
+                                        </li>
+                                        <li> <a href="{{ url_for('supprimercours', idc=l[0]) }}"
+                                                onclick="return confirm('Êtes-vous sûr de vouloir supprimer ce cours ?');">
+                                                Supprimer</a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </td>
+                        </tr>
+
+                    </tbody>
+                    {% endfor %}
+                </table>
+
+                <!-- Modale AjoutCours -->
+                <div class="modal fade" tabindex="-1" role="dialog" id="ajout" aria-hidden="true"
+                    aria-labelledby="Ajouter">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                Ajouter un Cours
+                                <button type="button" class="close" data-dismiss="modal"
+                                    aria-hidden="true">&times;</button>
+                            </div>
+                            <div class="modal-body">
+                                <form action="{{ url_for('ajoutcours') }}" method="POST">
+                                    <input type="hidden" name="save_c" value="save_c">
+                                    Vacataire:
+                                    <select name="vacataire_c" class="form-control" required>
+                                        {% for vacataires in vacataire %}
+                                        <option value="{{ vacataires[0] }}">{{ vacataires[1] }}</option>
+                                        {% endfor %}
+                                    </select>
+                                    <br>Matière:
+                                    <input type="text" name="matiere" class="form-control" required
+                                        placeholder="Entrer la matière" autocomplete="off">
+                                    <br>Objectif:
+                                    <textarea name="objectif" class="form-control" required
+                                        placeholder="Décrire l'objectif du cours"></textarea>
+                                    <br>Heures prévues:
+                                    <input type="number" name="heures_prevues" class="form-control" required
+                                        placeholder="Entrer le nombre d'heures prévues" autocomplete="off">
+                                    <br><br>
+                                    <button type="submit" class="btn btn-primary btn-block"><i
+                                            class="glyphicon glyphicon-pencil"></i> Ajouter</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Fin modale ajout -->
+
+                {% for l in liste %}
+                <!-- Modale Modification Cours -->
+                <div class="modal fade" id="modifierCours{{ l[0] }}" tabindex="-1" role="dialog"
+                    aria-labelledby="modifierCoursLabel" aria-hidden="true">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="modifierCoursLabel">Modifier le Cours</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <form action="{{ url_for('modifiercours', idc=l[0]) }}" method="POST">
+                                    <input type="hidden" name="modifier" value="modifier">
+                                    <div class="form-group">
+                                        <label for="vacataire_c">Vacataire</label>
+                                        <select class="form-control" name="vacataire_c" required>
+                                            {% for vacataires in vacataire %}
+                                            <option value="{{ vacataires[0] }}" {% if vacataires[0]==l[1] %}selected{%
+                                                endif %}>
+                                                {{ vacataires[1] }}
+                                            </option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="matiere">Matière</label>
+                                        <input type="text" class="form-control" name="matiere" value="{{ l[2] }}"
+                                            required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="objectif">Objectif</label>
+                                        <input type="text" class="form-control" name="objectif" value="{{ l[3] }}"
+                                            required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="heures_prevues">Heures prévues</label>
+                                        <input type="number" class="form-control" name="heures_prevues"
+                                            value="{{ l[4] }}" required>
+                                    </div>
+                                    <button type="submit" class="btn btn-primary">Enregistrer</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>
